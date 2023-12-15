@@ -32,4 +32,11 @@ export class Users {
     nullable: false,
   })
   password: string;
+
+  @Column({
+    type: 'boolean',
+    nullable: false,
+    default: false,
+  })
+  valid: boolean;
 }

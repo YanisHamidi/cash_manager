@@ -19,14 +19,14 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto) {
     const { email, ...rest } = createUserDto;
 
-    const isEmailExist = await this.isEmailAlreadyExists(email); // Vérifie si l'email existe déjà
+    const isEmailExist = await this.isEmailAlreadyExists(email);
 
     if (isEmailExist) {
-      throw new ConflictException('Email already exists'); // Gestion de l'erreur si l'email existe déjà
+      throw new ConflictException('Email already exists');
     }
 
     const { password } = createUserDto;
-    const hashedPassword = await hashPassword(password); // Appel à la fonction de hachage
+    const hashedPassword = await hashPassword(password);
 
     const newUser = this.userRepository.create({
       ...rest,
@@ -34,6 +34,10 @@ export class UserService {
       password: hashedPassword,
     });
     return this.userRepository.save(newUser);
+  }
+
+  async getConfirmAccount(userId: number) {
+    return this.userRepository.update({ id: userId }, { valid: true });
   }
 
   async getUsers() {
