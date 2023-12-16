@@ -73,7 +73,13 @@ export class UserService {
       };
       return {
         statusCode: HttpStatus.OK,
-        data: jwt.sign(payload, this.secretKey),
+        data: {
+          token: jwt.sign(payload, this.secretKey),
+          userId: user.id,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+        },
       };
     }
   }
