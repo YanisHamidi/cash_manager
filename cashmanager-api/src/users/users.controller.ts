@@ -7,7 +7,6 @@ import {
   Get,
   Query,
   HttpCode,
-  HttpStatus,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto/login-user.dto';
