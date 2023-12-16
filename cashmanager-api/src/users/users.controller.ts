@@ -6,8 +6,11 @@ import {
   ValidationPipe,
   Get,
   Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto/create-user.dto';
+import { LoginUserDto } from './dto/login-user.dto/login-user.dto';
 import { UserService } from './services/users.service';
 import { BrevoService } from './services/brevo.service';
 
@@ -36,8 +39,10 @@ export class UserController {
     return this.userService.getConfirmAccount(userId);
   }
 
-  @Get()
-  async getUsers() {
-    return this.userService.getUsers();
+  @Post('/login')
+  @HttpCode(200)
+  async loginUser(@Body() loginUserDto: LoginUserDto) {
+    const response = await this.userService.loginUser(loginUserDto);
+    return response;
   }
 }

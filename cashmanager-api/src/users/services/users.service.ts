@@ -1,12 +1,22 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpCode,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto/create-user.dto';
-import { hashPassword } from '../utils';
+import { comparePasswords, hashPassword } from '../utils';
+import { LoginUserDto } from '../dto/login-user.dto/login-user.dto';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserService {
+  private readonly secretKey =
+    '0affcbd6ab8594eea41b4cc063c225821a745e1a6e38e7a960e9c5bdff4fe791';
   constructor(
     @InjectRepository(Users) private readonly userRepository: Repository<Users>,
   ) {}
@@ -22,7 +32,7 @@ export class UserService {
     const isEmailExist = await this.isEmailAlreadyExists(email);
 
     if (isEmailExist) {
-      throw new ConflictException('Email already exists');
+      throw new ConflictException();
     }
 
     const { password } = createUserDto;
@@ -40,7 +50,32 @@ export class UserService {
     return this.userRepository.update({ id: userId }, { valid: true });
   }
 
-  async getUsers() {
-    return this.userRepository.find();
+  async loginUser(loginUserDto: LoginUserDto) {
+    const emailExist = await this.isEmailAlreadyExists(loginUserDto.email);
+    if (!emailExist) {
+      return {
+        statusCode: HttpStatus.NO_CONTENT,
+        data: null,
+      };
+    }
+    const user = await this.userRepository.findOne({
+      where: { email: loginUserDto.email },
+    });
+    const comparePasswordsResult = await comparePasswords(
+      loginUserDto.password,
+      user.password,
+    );
+
+    if (!comparePasswordsResult) throw new UnauthorizedException();
+    if (comparePasswordsResult) {
+      const payload = {
+        userId: user.id,
+        email: user.email,
+      };
+      return {
+        statusCode: HttpStatus.OK,
+        data: jwt.sign(payload, this.secretKey),
+      };
+    }
   }
 }
