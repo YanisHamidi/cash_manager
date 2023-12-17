@@ -1,15 +1,15 @@
 import React from "react";
 import { View, Text, Button, Image } from "react-native";
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ navigation }: any) {
   return (
     <View className="h-screen bg-[#0D5B5F]">
       {/* Image */}
-      <View className="h-[40%]">
+      <View className="h-[50%]">
         <Image source={require("../../assets/welcomeScreenImage.png")} />
       </View>
       {/* Content */}
-      <View className="h-[60%] flex items-center justify-center px-6 gap-y-6">
+      <View className="h-[50%] flex items-center justify-evenly px-6">
         {/* Title */}
         <View className="mb-16">
           <Text className="text-center text-4xl text-[#F9C578] font-semibold mb-5">
@@ -27,6 +27,7 @@ export default function WelcomeScreen() {
               title="Login"
               color="#fff"
               accessibilityLabel="Learn more about this purple button"
+              onPress={() => navigation.navigate("SignIn")}
             />
           </View>
           <View className="bg-[#168489] w-[45%] rounded-lg py-1">
