@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity()
+@Unique(['accountId'])
 export class Accounts {
   @PrimaryGeneratedColumn()
   id: number;
@@ -27,6 +28,7 @@ export class Accounts {
 
   @Column({
     type: 'character varying',
+    unique: true,
     default: ''
   })
   accountId: string;

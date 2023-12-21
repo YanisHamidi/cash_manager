@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Accounts } from 'src/typeorm';
 import { Repository } from 'typeorm';
@@ -12,8 +12,24 @@ export class AccountsService {
 
  async createAccount(createAccountDto: CreateAccountDto) {
     const newAccount = this.accountsRepository.create(createAccountDto);
-    return this.accountsRepository.save(newAccount);
- }
+    try {
+
+      return await this.accountsRepository.save(newAccount);
+
+  } catch (error) {
+
+      if (error.code === '23505') { // Unique constraint violation error code
+
+          throw new HttpException('Account ID already exists', HttpStatus.CONFLICT);
+
+      } else {
+
+          throw new HttpException('An error occurred while creating the account', HttpStatus.INTERNAL_SERVER_ERROR);
+
+      }
+
+  }
+}
 
  async getAccounts() {
     return this.accountsRepository.find();
