@@ -18,7 +18,7 @@ This software suite is a divided into 2 parts:
 
 ## Languages:
 
-This project was developped using the MERN (MongoDB/Express/React.js/Node.js) stack:
+This project was developped using :
 
 - Server → NestJS.
 
