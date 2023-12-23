@@ -17,7 +17,7 @@ export class TransactionsService {
   }
 
   async getTransactionCode(identifier: string): Promise<string | null> {
-    const transaction = await this.transactionRepository.findOne({ where: { identifier, status: 'initiated' } });
+    const transaction = await this.transactionRepository.findOne({ where: { identifier, status: 'pending' } });
 
     return transaction ? transaction.code : null;
   }
@@ -33,29 +33,40 @@ export class TransactionsService {
 
     return account;
   }
-
   async initiateTransaction(identifier: string, price: number): Promise<void> {
     const account = await this.getAccountByIdentifier(identifier);
-
-    const existingTransaction = await this.transactionRepository.findOne({ where: { identifier, status: 'initiated' } });
-
+  
+    const existingTransaction = await this.transactionRepository.findOne({ where: { identifier, status: 'pending' } });
+  
     if (existingTransaction) {
-      throw new Error('An initiated transaction already exists for this identifier');
+      throw new Error('A pending transaction already exists for this identifier');
     }
-
+  
     const confirmationCode = Math.random().toString(36).substring(7);
-
+  
     const newTransaction = new Transaction(identifier, confirmationCode);
+    
+
+    newTransaction.status = 'pending';
+    
     await this.transactionRepository.save(newTransaction);
+  
 
     await this.sendConfirmationSMS(account.phonenumber, confirmationCode);
   }
+  
 
   async confirmTransaction(identifier: string, code: string, price: number): Promise<void> {
     const isCodeValid = await this.verifyConfirmationCode(identifier, code);
 
     if (!isCodeValid) {
       throw new HttpException('Invalid confirmation code', HttpStatus.BAD_REQUEST);
+    }
+
+    const transaction = await this.transactionRepository.findOne({ where: { identifier, status: 'pending' } });
+    if (transaction) {
+      transaction.status = 'confirmed';
+      await this.transactionRepository.save(transaction);
     }
 
     await this.deductPriceFromAccount(identifier, price);
@@ -86,6 +97,7 @@ export class TransactionsService {
   }
 
   private async verifyConfirmationCode(identifier: string, code: string): Promise<boolean> {
+    
     const storedCode = await this.getTransactionCode(identifier);
 
     return code === storedCode; 

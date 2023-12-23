@@ -23,5 +23,21 @@ export class TransactionsController {
     }
   }
 
+  @Post('/confirm-transaction')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async confirmTransaction(@Body() confirmationData: { identifier: string; code: string; price: number }) {
+    try {
+      const { identifier, code, price } = confirmationData;
 
+      if (!identifier || !code || !price || typeof price !== 'number') {
+        throw new HttpException('Invalid request data', HttpStatus.BAD_REQUEST);
+      }
+
+      await this.transactionsService.confirmTransaction(identifier, code, price);
+
+      return { message: 'Transaction confirmed successfully' };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
