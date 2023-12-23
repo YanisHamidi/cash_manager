@@ -13,7 +13,7 @@ export class TransactionsService {
     @InjectRepository(Accounts) private readonly accountsRepository: Repository<Accounts>,
     @InjectRepository(Transaction) private readonly transactionRepository: Repository<Transaction>,
   ) {
-    this.twilioClient = twilio('ACc6f9247f398a78f7b09c0d9aa8be7ceb', 'bc7f9a9625e8c23f1bd6a252b6852e42');
+    this.twilioClient = '';
   }
 
   async getTransactionCode(identifier: string): Promise<string | null> {
