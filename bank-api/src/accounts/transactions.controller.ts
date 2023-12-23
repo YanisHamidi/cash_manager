@@ -7,19 +7,21 @@ export class TransactionsController {
 
   @Post('/request-transaction')
   @UsePipes(new ValidationPipe({ transform: true }))
-  async deductAmountFromAccount(@Body() deductionData: { identifier: string; price: number }) {
+  async initiateTransaction(@Body() transactionData: { identifier: string; price: number }) {
     try {
-      const { identifier, price } = deductionData;
+      const { identifier, price } = transactionData;
 
       if (!identifier || !price || typeof price !== 'number') {
         throw new HttpException('Invalid request data', HttpStatus.BAD_REQUEST);
       }
 
-      await this.transactionsService.deductAmountFromAccount(identifier, price);
+      const confirmationCode = await this.transactionsService.initiateTransaction(identifier, price);
 
-      return { message: 'Amount deducted successfully' };
+      return { message: 'Transaction initiated successfully', confirmationCode };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+
 }
