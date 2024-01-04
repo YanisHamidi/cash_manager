@@ -1,12 +1,26 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Pressable } from "react-native";
+import { View, Text, TextInput, Pressable } from "react-native";
+// API Request
+import { Login } from "../../api/login/login";
+// Context
+import { useUserDispatch } from "../../store/Context";
 
 export default function SignInScreen({ navigation }: any) {
   const [email, setEmail] = useState("");
   const [psw, setPsw] = useState("");
 
-  function login() {
-    alert(email + " " + psw);
+  const dispatch = useUserDispatch();
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailRegex.test(email);
+  };
+
+  async function login() {
+    if (email === "") alert("L'email est vide");
+    else if (psw === "") alert("Le mot de passe est vide");
+    else if (validateEmail(email)) await Login(email, psw, dispatch);
+    else alert("L'email n'est pas valide");
   }
 
   return (
@@ -27,6 +41,8 @@ export default function SignInScreen({ navigation }: any) {
             value={email}
             placeholder="Votre email"
             returnKeyType="done"
+            inputMode="email"
+            keyboardType="email-address"
           />
           <TextInput
             className="h-12 w-full bg-[#F2F2F2] mb-6 rounded-lg pl-4"
