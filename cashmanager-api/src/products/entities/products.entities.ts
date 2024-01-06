@@ -1,9 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Shops } from 'src/typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Products {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne(() => Shops, (shop) => shop.products)
+  shop: Shops;
 
   @Column({
     type: 'character varying',
@@ -27,9 +31,11 @@ export class Products {
   image: string;
 
   @Column({
-    type: 'character varying',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
     nullable: false,
-    default: '',
+    default: '0.00',
   })
-  price: string;
+  price: number;
 }
