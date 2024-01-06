@@ -3,6 +3,7 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import entities from './typeorm';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import entities from './typeorm';
       inject: [ConfigService],
     }),
     UsersModule,
+    ProductsModule,
   ],
 })
 export class AppModule {}

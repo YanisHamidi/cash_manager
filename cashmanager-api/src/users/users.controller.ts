@@ -40,6 +40,7 @@ export class UserController {
 
   @Post('/login')
   @HttpCode(200)
+  @UsePipes(new ValidationPipe({ transform: true }))
   async loginUser(@Body() loginUserDto: LoginUserDto) {
     const response = await this.userService.loginUser(loginUserDto);
     return response;
