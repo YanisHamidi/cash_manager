@@ -21,8 +21,6 @@ export class TransactionsService {
     private readonly transactionRepository: Repository<Transaction>,
   ) {
     this.twilioClient = twilio(
-      'ACc6f9247f398a78f7b09c0d9aa8be7ceb',
-      'edb8e232a22c413b91b0aa249ec535e2',
     );
   }
 
