@@ -8,16 +8,11 @@ export class Transaction {
   @Column()
   identifier: string;
 
-  @Column()
-  code: string;
-
   @Column({ default: 'initiated' })
   status: string;
 
-
-  constructor(identifier: string, code: string) {
+  constructor(identifier: string) {
     this.identifier = identifier;
-    this.code = code;
-    this.status = 'initiated'; 
-}
+    this.status = 'initiated';
+  }
 }

@@ -14,7 +14,7 @@ export class AccountsController {
   constructor(private readonly accountService: AccountsService) {}
 
   @Post('/create')
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   async createAccount(@Body() createAccountDto: CreateAccountDto) {
     return this.accountService.createAccount(createAccountDto);
   }

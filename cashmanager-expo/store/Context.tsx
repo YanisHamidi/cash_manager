@@ -38,10 +38,35 @@ function usersReducer(
     case "updateUser":
       return { ...user, ...action.payload };
     case "clearUser":
-      return null;
+      return {
+        user: {
+          id: 0,
+          firstname: "",
+          lastname: "",
+          email: "",
+          products: [],
+        },
+        ...action.payload,
+      };
+    case "addToCart":
+      return { ...user, products: [...user.products, action.payload] };
+    case "removeFromCart":
+      const updatedProducts = user.products.filter(
+        (product: { id: React.Key | null | undefined }) =>
+          product.id !== action.payload.productId
+      );
+      return { ...user, products: updatedProducts };
+    case "paymentComplete":
+      return {...user, products: []}
     default:
       throw new Error(`Unknown action type: ${action.type}`);
   }
 }
 
-const initialUser = { id: 0, firstname: "", lastname: "", email: "" };
+const initialUser = {
+  id: 0,
+  firstname: "",
+  lastname: "",
+  email: "",
+  products: [],
+};

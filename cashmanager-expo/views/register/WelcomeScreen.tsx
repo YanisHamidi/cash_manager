@@ -35,6 +35,7 @@ export default function WelcomeScreen({ navigation }: any) {
               title="Register"
               color="#fff"
               accessibilityLabel="Learn more about this purple button"
+              onPress={() => navigation.navigate("SignUp")}
             />
           </View>
         </View>

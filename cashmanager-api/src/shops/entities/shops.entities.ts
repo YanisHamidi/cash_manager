@@ -1,5 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Products } from '../../products/entities/products.entities';
+import { Users } from '../../typeorm';
 
 @Entity()
 export class Shops {
@@ -12,6 +19,13 @@ export class Shops {
     default: '',
   })
   name: string;
+
+  @Column({
+    type: 'character varying',
+    nullable: false,
+    default: '',
+  })
+  address: string;
 
   @Column({
     type: 'decimal',
@@ -40,4 +54,7 @@ export class Shops {
 
   @OneToMany(() => Products, (product) => product.shop)
   products: Products[];
+
+  @ManyToOne(() => Users, (user) => user.shops)
+  owner: Users;
 }

@@ -4,6 +4,12 @@ import {
   Body,
   UsePipes,
   ValidationPipe,
+  Query,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { ProductsService } from './services/products.service';
 import { CreateProductDto } from './dto/create.dto/create-product.dto';
@@ -20,5 +26,18 @@ export class ProductsController {
   ) {
     const result = await this.productsService.createProduct(createProductDto);
     return result;
+  }
+
+  @Get('get-products-by-shop-id')
+  async getProductsByShop(@Query('shopId') shopId: string) {
+    const result = await this.productsService.getProductsByShop(shopId);
+    if (result.length === 0)
+      throw new HttpException('No product', HttpStatus.NO_CONTENT);
+    return result;
+  }
+
+  @Delete('delete-product/:productId')
+  async deleteProductByProductId(@Param('productId') productId: string) {
+    return await this.productsService.deleteProductByProductId(productId);
   }
 }

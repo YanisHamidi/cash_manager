@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, MinLength } from 'class-validator';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -18,5 +18,6 @@ export class CreateProductDto {
   @IsNotEmpty()
   image: string;
 
+  @IsNumber()
   price: number;
 }

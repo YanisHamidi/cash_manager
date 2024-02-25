@@ -7,7 +7,11 @@ import {
   TextInput,
   Pressable,
   ActivityIndicator,
+  ImageBackground,
+  FlatList,
 } from "react-native";
+// Screens
+import ShopScreen from "../shop/ShopScreen";
 // Components
 import NavbarComponent from "../../components/navbar/NavbarComponent";
 // Context User Datas
@@ -47,12 +51,21 @@ export default function HomeScreen({ navigation }: any) {
     );
   }
 
+  const filteredShops = shops?.filter(
+    (shop: {
+      id: React.Key | null | undefined;
+      image: string;
+      name: string;
+      address: string;
+    }) => shop.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <View className="relative h-screen">
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <View style={styles.scrollContent}>
         <View className="mt-14 mb-4">
           <Text className="text-lg text-capitalize">
-            Salut, {user.firstname}
+            Salut, {user.firstname === null ? "" : user.firstname}
           </Text>
         </View>
         <View className="mb-2">
@@ -66,20 +79,64 @@ export default function HomeScreen({ navigation }: any) {
         </View>
         <View>
           {shops === null ? (
-            <View className="h-[90%] flex items-center justify-center">
+            <View className="mt-10">
               <Text className="text-2xl text-center text-[#168489] font-semibold">
                 Aucune boutique ne se trouve autour de vous !
               </Text>
             </View>
+          ) : filteredShops.length > 0 ? (
+            <FlatList
+              data={filteredShops}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <Pressable
+                  key={item.id}
+                  onPress={() => navigation.navigate("Shop", { shop: item })}
+                  className="border-b border-[#E6E6E6] pb-4 mb-4"
+                >
+                  <ImageBackground
+                    className="w-full h-[125px] rounded-lg mb-4 overflow-hidden"
+                    source={{ uri: item.image }}
+                  ></ImageBackground>
+                  <Text className="font-semibold">
+                    {item.name},{" "}
+                    <Text className="text-[#808080] font-light">
+                      {item.address}
+                    </Text>
+                  </Text>
+                </Pressable>
+              )}
+            />
           ) : (
-            <View className="border-b border-[#E6E6E6] pb-4 mb-4">
-              <View className="bg-[#E6E6E6] h-32 w-full rounded-lg mb-4"></View>
-              <Text className="text-md">Galleries Lafayette</Text>
-            </View>
+            shops.map(
+              (shop: {
+                id: React.Key | null | undefined;
+                image: string;
+                name: string | undefined;
+                address: string;
+              }) => (
+                <Pressable
+                  key={shop.id}
+                  onPress={() => navigation.navigate("Shop", { shop })}
+                  className="border-b border-[#E6E6E6] pb-4 mb-4"
+                >
+                  <ImageBackground
+                    className="w-full h-[125px] rounded-lg mb-4 overflow-hidden"
+                    source={{ uri: shop.image }}
+                  ></ImageBackground>
+                  <Text className="font-semibold">
+                    {shop.name},{" "}
+                    <Text className="text-[#808080] font-light">
+                      {shop.address}
+                    </Text>
+                  </Text>
+                </Pressable>
+              )
+            )
           )}
         </View>
-      </ScrollView>
-      <NavbarComponent routeName="home" />
+      </View>
+      <NavbarComponent navigation={navigation} />
     </View>
   );
 }
@@ -88,6 +145,5 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: 16,
-    paddingBottom: 96,
   },
 });

@@ -34,7 +34,7 @@ export default function SignInScreen({ navigation }: any) {
         </Text>
       </View>
       <View className="w-full">
-        <View className="w-full">
+        <View className="w-full pb-10">
           <TextInput
             className="h-12 w-full bg-[#F2F2F2] mb-6 rounded-lg px-4"
             onChangeText={setEmail}
@@ -52,11 +52,6 @@ export default function SignInScreen({ navigation }: any) {
             placeholder="Votre mot de passe"
             returnKeyType="done"
           />
-        </View>
-        <View className="w-full mb-6">
-          <Pressable>
-            <Text className="text-right text-white">Mot de passe oublié ?</Text>
-          </Pressable>
         </View>
         <View className="w-full">
           <Pressable

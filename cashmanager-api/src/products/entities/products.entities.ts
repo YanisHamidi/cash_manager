@@ -1,4 +1,4 @@
-import { Shops } from 'src/typeorm';
+import { Shops } from '../../typeorm';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -6,7 +6,7 @@ export class Products {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Shops, (shop) => shop.products)
+  @ManyToOne(() => Shops, (shop) => shop.products, { onDelete: 'CASCADE' })
   shop: Shops;
 
   @Column({
